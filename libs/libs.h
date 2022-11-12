@@ -22,12 +22,14 @@
 #define MaxJoueurs 10
 #define CHECK(sts,msg) if ((sts) == -1 )  { perror(msg);_exit(-1);}
 
+//structure Tas de cartes, pour la pioche, le talon ou les mains des joueurs
 typedef struct  
 {
 	int num;
 	char coul;
 } carte, *cartes;
 
+//structure representant un joueur (avec son pid, pseudo, score, sa main, et son nombre de cartes
 typedef struct  
 {
 	int pid;
@@ -36,5 +38,7 @@ typedef struct
 	cartes jeu;
 	int nbCartes;
 } joueur;
+
+//structure partie (avec : tableau de joueur, pidServeur, tour, sens)
 
 

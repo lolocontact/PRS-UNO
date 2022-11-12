@@ -23,7 +23,9 @@ void init_sig( struct sigaction* newact, void (*func)() ){
 	// Re-initialisation du masque  de traitement des signaux
 	CHECK(sigemptyset(&(newact->sa_mask)),"problème sigemptyset"); 
 
+	//on accède aux infos disponible sur l'envoyeur
 	newact->sa_flags = SA_SIGINFO;
+	//ici mask par default
 	sigprocmask(SIG_SETMASK,&(newact->sa_mask),NULL);
 }
 

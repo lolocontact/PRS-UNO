@@ -12,7 +12,7 @@ void * connexions ( void* DonneeServeur );
 void connexionsHandler (int signal_number, siginfo_t *info);
 
 void createTube( char * name );
-int *connectTubeRead( char * name );
+int connectTubeRead( char * name );
 void readTube( int valread, char * buffer, int size /*MSIZE*/);
 int connectTubeWrite( char * name );
 void writeTube( int valwrite, char * buffer, int size /*MSIZE*/);

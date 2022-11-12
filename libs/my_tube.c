@@ -29,14 +29,14 @@ void createTube( char * name ){
 /*Fonction : connectTubeRead									*/
 /* Description : se connecte au tube nommé <name> en lecture					*/
 /************************************************************************************************/
-int * connectTubeRead( char * name ){
+int connectTubeRead( char * name ){
 	int valread;
 	if ((valread = open(name, O_RDONLY | O_NONBLOCK)) == -1)
 	{
         	perror("Impossible d'ouvrir le tube en lecture:");
         	exit(EXIT_FAILURE);
 	}
-	return &valread;
+	return valread;
 }
 
 /************************************************************************************************/

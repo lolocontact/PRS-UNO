@@ -18,6 +18,10 @@ int connecteSegment(int size, char *name, int cle /*1,2*/){
 //shmId = shmget(cleSegment, 100 * sizeof(char),IPC_CREAT | IPC_EXCL | SHM_R | SHM_W);
 //ftok(nomSegment, 1);
 
+/**************************************************************************************************/
+/*Fonction : creerSegment                                                                         */
+/* Description : Créer un segment/une memoire partagée		                                  */
+/**************************************************************************************************/
 int creerSegment(int size, char *name, int cle /*1,2*/)
 {
 	// On récupère l'ID de notre segment de mémoire partagée
@@ -31,6 +35,10 @@ int creerSegment(int size, char *name, int cle /*1,2*/)
 	return shmid ;
 }
 
+/**************************************************************************************************/
+/*Fonction : supprimerSegment                                                                     */
+/* Description : Supprime un segment par son id			                                  */
+/**************************************************************************************************/
 void supprimerSegment(int shmid){
 	if (shmctl(shmid,IPC_RMID,NULL) == -1){
 		printf("Erreur de supression%s\n",strerror(errno)) ;
@@ -38,6 +46,10 @@ void supprimerSegment(int shmid){
 	}
 }
 
+/**************************************************************************************************/
+/*Fonction : detacherSegment                                                                      */
+/* Description : On se détache d'un segment			                                  */
+/**************************************************************************************************/
 void detacherSegment(char * segmentADDRESS){
 	if( shmdt(segmentADDRESS) == -1){
 		printf("Erreur de supression%s\n",strerror(errno)) ;
@@ -45,6 +57,10 @@ void detacherSegment(char * segmentADDRESS){
 	}
 }
 
+/**************************************************************************************************/
+/*Fonction : ecritureSegment                                                                      */
+/* Description : On écrit sur un segment			                                  */
+/**************************************************************************************************/
 void ecritureSegment(int segmentID, char* message){
 	char * zoneEcriture = shmat(segmentID,NULL,0);
 	if (zoneEcriture == (char *)-1)
@@ -55,6 +71,10 @@ void ecritureSegment(int segmentID, char* message){
 	sprintf(zoneEcriture,"%s",message);
 }
 
+/**************************************************************************************************/
+/*Fonction : lireSegment                                                                          */
+/* Description : Lis un segment					                                  */
+/**************************************************************************************************/
 char * lireSegment(int shmId){
 	char * message = shmat(shmId,NULL,0);
 	if (message == (char *)-1)
@@ -65,6 +85,10 @@ char * lireSegment(int shmId){
 	return message;
 }
 
+/**************************************************************************************************/
+/*Fonction : attacheSegment                                                                       */
+/* Description : S'attache a un segment				                                  */
+/**************************************************************************************************/
 char * attacheSegment(int segmentID){
 	char * segmentADDRESS = shmat(segmentID, "NULL", 0);
 	if (!segmentADDRESS)
@@ -110,6 +134,10 @@ char * attacheSegment2(int segmentID, char * segmentADDRESS){
 /* AUTRE                                             */
 /* ==================================================== */
 
+/**************************************************************************************************/
+/*Fonction : pid2string	                                                                          */
+/* Description : créer un nom/emplacement de segment au nom du pid                                */
+/**************************************************************************************************/
 char * pid2string( int pid ){
 	char* pidstr = malloc(100);
 	char* nomTube = malloc(100);
