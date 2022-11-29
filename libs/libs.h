@@ -14,6 +14,7 @@
 
 #include <pthread.h>
 #include <time.h>
+//#include <semaphore.h>
 
 #define SIZE 1000
 #define MSIZE 64
@@ -36,9 +37,15 @@ typedef struct
 	char pseudo[MaxPseudo];
 	int score;
 	cartes jeu;
-	int nbCartes;
+	int nbCartesEnMain; 
 } joueur;
 
 //structure partie (avec : tableau de joueur, pidServeur, tour, sens)
 
-
+//definition des fonctions :
+void setJoueur(int index, char* pseudo, int pid, int score, int nbCartes /*,cartes jeu*/);
+void ajoutJoueurPid (int signal_number, siginfo_t *info);
+void * AttenteJoueurs();
+void CreerPartie();
+void RejoindrePartie (int signal_number, siginfo_t *info);
+void DemandeRejoindrePartie(int pidServer, char *tempPseudo);

@@ -18,4 +18,4 @@ lib_seg.o : libs/segment.c libs/libs.h libs/segment.h
 
 clean :
 	@rm -f exe
-	rm -f lib_tube.o lib_sig.o exe.o
+	rm -f lib_tube.o lib_sig.o lib_seg.o exe.o

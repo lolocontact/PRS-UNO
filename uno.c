@@ -24,15 +24,17 @@ int tempReponse;
 /*Fonction : setJoueur										*/
 /* Description : ajoute un joueur dans le tableau joueurs					*/
 /************************************************************************************************/
-void setJoueur(int index, char* pseudo, int pid, int score, int nbCartes /*,cartes jeu*/){
+void setJoueur(int index, char* pseudo, int pid, int score, int nbCartesEnMain /*,cartes jeu*/){
 	joueurs[index].pid = pid;
 	strcpy(joueurs[index].pseudo, pseudo);
 	joueurs[index].score = score;
-	joueurs[index].nbCartes = nbCartes;
+	joueurs[index].nbCartesEnMain = nbCartesEnMain;
 }
 
 //=======================================================================================================
+//=======================================================================================================
 //---------------------------------------------Coté Hébergeur--------------------------------------------
+//=======================================================================================================
 //=======================================================================================================
 
 /************************************************************************************************/
@@ -52,10 +54,15 @@ void ajoutJoueurPid (int signal_number, siginfo_t *info)
 				//on le préviens qu'il est prit (signal SIGUSR1)
 				kill(joueurs[nbJoueur].pid, SIGUSR1);
 				
-				//on récupère le pseudo du joueur (via un segment partagée)
 				sleep(1);
-				int segmId = connecteSegment( MaxPseudo * sizeof(char), pid2string( info->si_pid ) , 2 );
-				setJoueur(nbJoueur, lireSegment(segmId), info->si_pid, 0, 0);
+				//on récupère le pseudo du joueur (via un segment partagée)
+				//int segmId = connecteSegment( MaxPseudo * sizeof(char), pid2string( info->si_pid ) , 2 );
+				//setJoueur(nbJoueur, lireSegment(segmId), info->si_pid, 0, 0);
+				
+				//on récupère le pseudo du joueur (via un tube)
+				int valread = readTube( nameTube(info->si_pid), joueurs[nbJoueur].pseudo, MaxPseudo);
+				close(valread);
+				
 				printf("- %s\n",joueurs[nbJoueur].pseudo);
 				
 				//TODO : supprimer le segment partagée, en recréer un pour les échanges pour la partie
@@ -105,11 +112,13 @@ void CreerPartie(){
 	pthread_join(thread, &ret);
 	
 	//TODO démarrer la partie
+	
 }
 
-
+//=======================================================================================================
 //=======================================================================================================
 //---------------------------------------------Coté Joueur-----------------------------------------------
+//=======================================================================================================
 //=======================================================================================================
 
 /************************************************************************************************/
@@ -137,6 +146,11 @@ void RejoindrePartie (int signal_number, siginfo_t *info){
 /************************************************************************************************/
 void DemandeRejoindrePartie(int pidServer, char *tempPseudo){
 	
+	//création de tube afin d'envoyer le pseudo
+	createTube(nameTube(getpid()));
+	//on écrit le pseudo dans le tube
+	int valwrite = writeTube( nameTube( getpid()), tempPseudo, MaxPseudo);
+	
 	//envoie signal à l'hergeur pour demander l'accès à la partie
 	kill(pidServer, SIGUSR1);
 	// Attente signal (SIGUSR1) de la part de l'hebergeur (accès accepté)
@@ -148,19 +162,26 @@ void DemandeRejoindrePartie(int pidServer, char *tempPseudo){
 	//attente validation de l'hébergeur
 	pthread_mutex_lock(& mutexAttenteServ);
 	
+
+	
+	
 	//création mémoire partagée afin d'envoyer le pseudo
-	createTube(nameTube(getpid()));
-	int segmId = creerSegment( MaxPseudo * sizeof(char), pid2string( getpid() ), 1 );
-	ecritureSegment( segmId, tempPseudo);
+	//int segmId = creerSegment( MaxPseudo * sizeof(char), pid2string( getpid() ), 1 );
+	//ecritureSegment( segmId, tempPseudo);
+	
 	
 	//TODO démarrer la partie
 	for( ; ; ){ }
 	
+	
+	//on ferme la sortie écriture du tube
+	close(valwrite);
 }
 
-
+//=======================================================================================================
 //=======================================================================================================
 //-------------------------------------------------Main--------------------------------------------------
+//=======================================================================================================
 //=======================================================================================================
 int main()
 {

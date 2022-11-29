@@ -7,15 +7,27 @@
  * **********************************/
 
 //definitions :
-void ajouterUtilisateur(int newPid);
-void * connexions ( void* DonneeServeur );
-void connexionsHandler (int signal_number, siginfo_t *info);
-
+/************************************************************************************************/
+/*Fonction : createTube										*/
+/* Description : Créer un tube nommé avec les droits UNIX definie dans la variable FIFO_MODE	*/
+/************************************************************************************************/
 void createTube( char * name );
-int connectTubeRead( char * name );
-void readTube( int valread, char * buffer, int size /*MSIZE*/);
-int connectTubeWrite( char * name );
-void writeTube( int valwrite, char * buffer, int size /*MSIZE*/);
-char * nameTube( int pid );
 
+/************************************************************************************************/
+/*Fonction : readTube										*/
+/* Description : ouvre un tube en read only (côté client), lit dans le tube, puis le clot	*/
+/************************************************************************************************/
+int readTube(char * name, char * msg, int size /*MSIZE*/);
+
+/************************************************************************************************/
+/*Fonction : writeTube										*/
+/* Description : ouvre un tube en write only (côté serveur), écrit dedans, puis clot		*/
+/************************************************************************************************/
+int writeTube(char * name, char * msg, int size);
+
+/************************************************************************************************/
+/*Fonction : nameTube										*/
+/* Description : prends un pid (int) et retourne un string sous la forme "/tmp/<pid>.fifo"	*/
+/************************************************************************************************/
+char * nameTube( int pid );
 

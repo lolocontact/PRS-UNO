@@ -85,6 +85,32 @@ char * lireSegment(int shmId){
 	return message;
 }
 
+/************************************************************************************************/
+/*Fonction : infoSegment									*/
+/* Description : Donne des informations sur le segment de mémoire partagée			*/
+/************************************************************************************************/
+struct shmid_ds infoSegment(int shmid){
+	struct shmid_ds buf;
+	//IPC_SET IPC_RMID
+	if(shmctl(shmid,IPC_STAT,&buf)==-1) {
+		// vérification affichage des informations pour le segment
+		perror("Erreur d'affichage");
+		exit(1);
+    	}
+	else {
+		// affichage des informations du segment
+		/*printf("Informations du segments :\n") ;
+		printf("\tUID : %d\n",buf.shm_perm.uid) ;
+		printf("\tIUD : %d\n",buf.shm_perm.gid) ;
+		printf("\tCUID : %d\n",buf.shm_perm.cuid) ;
+		printf("\tCGID : %d\n",buf.shm_perm.cgid) ;
+		printf("\tmode d'accès : %d\n",buf.shm_perm.mode) ;
+		printf("\ttaille du segment : %d\n",(int) buf.shm_segsz) ;*/
+		
+	}
+	return buf;
+}
+
 /**************************************************************************************************/
 /*Fonction : attacheSegment                                                                       */
 /* Description : S'attache a un segment				                                  */
