@@ -5,8 +5,7 @@
 
 //=================================================Variables Globales==================================================
 //liste des joueurs
-joueur joueurs[MaxJoueurs];
-int nbJoueur = 0;
+partie p;
 
 //pid du serveur (dans le cas où l'on rejoins une partie)
 int PidServeur = 0;
@@ -25,10 +24,10 @@ int tempReponse;
 /* Description : ajoute un joueur dans le tableau joueurs					*/
 /************************************************************************************************/
 void setJoueur(int index, char* pseudo, int pid, int score, int nbCartesEnMain /*,cartes jeu*/){
-	joueurs[index].pid = pid;
-	strcpy(joueurs[index].pseudo, pseudo);
-	joueurs[index].score = score;
-	joueurs[index].nbCartesEnMain = nbCartesEnMain;
+	p.joueurs[index].pid = pid;
+	strcpy(p.joueurs[index].pseudo, pseudo);
+	p.joueurs[index].score = score;
+	p.joueurs[index].nbCartesEnMain = nbCartesEnMain;
 }
 
 //=======================================================================================================
@@ -46,13 +45,13 @@ void ajoutJoueurPid (int signal_number, siginfo_t *info)
 	switch (signal_number) {
 		case SIGUSR1 : 
 			//si on peut acceuillir le joueur au sein de la partie
-			if(nbJoueur<MaxJoueurs){
+			if(p.nbJoueur<MaxJoueurs){
 				//on ajoute le joueur
-				nbJoueur ++;
-				setJoueur(nbJoueur, "none", info->si_pid, 0, 0);
+				p.nbJoueur ++;
+				setJoueur(p.nbJoueur, "none", info->si_pid, 0, 0);
 				
 				//on le préviens qu'il est prit (signal SIGUSR1)
-				kill(joueurs[nbJoueur].pid, SIGUSR1);
+				kill(p.joueurs[p.nbJoueur].pid, SIGUSR1);
 				
 				sleep(1);
 				//on récupère le pseudo du joueur (via un segment partagée)
@@ -60,16 +59,16 @@ void ajoutJoueurPid (int signal_number, siginfo_t *info)
 				//setJoueur(nbJoueur, lireSegment(segmId), info->si_pid, 0, 0);
 				
 				//on récupère le pseudo du joueur (via un tube)
-				int valread = readTube( nameTube(info->si_pid), joueurs[nbJoueur].pseudo, MaxPseudo);
+				int valread = readTube( nameTube(info->si_pid), p.joueurs[p.nbJoueur].pseudo, MaxPseudo);
 				close(valread);
 				
-				printf("- %s\n",joueurs[nbJoueur].pseudo);
+				printf("- %s\n",p.joueurs[p.nbJoueur].pseudo);
 				
 				//TODO : supprimer le segment partagée, en recréer un pour les échanges pour la partie
 			}
 			else{
 				//on le préviens qu'il n'est pas prit (signal SIGUSR2)
-				kill(joueurs[nbJoueur].pid, SIGUSR2);
+				kill(info->si_pid, SIGUSR2);
 				printf("Tentative de connexion mais nombre de joueurs limite atteint \n");
 			}
 			
@@ -103,9 +102,9 @@ void * AttenteJoueurs() {
 /* Description : Initialise une partie et attends les autres joueurs				*/
 /************************************************************************************************/
 void CreerPartie(){
-	printf("-------------- code à partager : %d --------------\n", joueurs[0].pid);
+	printf("-------------- code à partager : %d --------------\n", p.joueurs[0].pid);
 	printf("-------------- LISTE DES JOUEURS (entrez n'importe quel charactere pour débuter) --------------\n");
-	printf("- %s\n", joueurs[0].pseudo);
+	printf("- %s\n", p.joueurs[0].pseudo);
 	
 	//thread attendant les joueurs et l'approbation de l'hébergeur pour démarrer.
 	pthread_create(&thread, NULL, AttenteJoueurs, NULL);
@@ -195,8 +194,10 @@ int main()
 	
 	//si héberge la partie
 	if(tempReponse == 1){
+		//init
+		p.nbJoueur = 0;
 		//on ajoute l'hébergeur en tant que joueur
-		nbJoueur ++;
+		p.nbJoueur ++;
 		PidServeur = getpid();
 		setJoueur(0, tempPseudo, getpid(), 0, 0);
 		//on créer la partie

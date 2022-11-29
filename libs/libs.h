@@ -21,6 +21,7 @@
 
 #define MaxPseudo 20
 #define MaxJoueurs 10
+#define NbCartes 108
 #define CHECK(sts,msg) if ((sts) == -1 )  { perror(msg);_exit(-1);}
 
 //structure Tas de cartes, pour la pioche, le talon ou les mains des joueurs
@@ -40,7 +41,17 @@ typedef struct
 	int nbCartesEnMain; 
 } joueur;
 
-//structure partie (avec : tableau de joueur, pidServeur, tour, sens)
+typedef struct
+{
+	joueur joueurs[MaxJoueurs];
+	int nbJoueur;
+	
+	int tour;
+	int sens;
+	
+	carte talon [NbCartes];
+	carte pioche;
+}partie;
 
 //definition des fonctions :
 void setJoueur(int index, char* pseudo, int pid, int score, int nbCartes /*,cartes jeu*/);
