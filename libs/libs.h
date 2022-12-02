@@ -27,7 +27,7 @@
 //structure Tas de cartes, pour la pioche, le talon ou les mains des joueurs
 typedef struct  
 {
-	int num;
+	char num;
 	char coul;
 } carte, *cartes;
 
@@ -50,7 +50,7 @@ typedef struct
 	int sens;
 	
 	carte talon [NbCartes];
-	carte pioche;
+	carte pioche [NbCartes];
 }partie;
 
 //definition des fonctions :

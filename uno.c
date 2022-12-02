@@ -2,6 +2,7 @@
 #include "libs/segment.h"
 #include "libs/my_sig.h"
 #include "libs/my_tube.h"
+#include "libs/my_file.h"
 
 //=================================================Variables Globales==================================================
 //liste des joueurs
@@ -28,6 +29,18 @@ void setJoueur(int index, char* pseudo, int pid, int score, int nbCartesEnMain /
 	strcpy(p.joueurs[index].pseudo, pseudo);
 	p.joueurs[index].score = score;
 	p.joueurs[index].nbCartesEnMain = nbCartesEnMain;
+}
+
+/************************************************************************************************/
+/*Fonction : initPartie										*/
+/* Description : initialise une partie de uno de zéro (tour, sens etc...)			*/
+/************************************************************************************************/
+void initPartie(){
+	p.tour = 0;
+	p.sens = 0; //haut en bas, 0 à infini
+	
+	//TODO mélange cartes -> Pioche et Talon
+	
 }
 
 //=======================================================================================================
@@ -84,6 +97,7 @@ void ajoutJoueurPid (int signal_number, siginfo_t *info)
 /* Description : ajoute et communique avec un joueur qui vient de se connecter			*/
 /************************************************************************************************/
 void * AttenteJoueurs() {
+	
 	// Attente signal (SIGUSR1) des joueurs
 	struct sigaction newact;
 	init_sig(&newact, ajoutJoueurPid);
@@ -102,6 +116,7 @@ void * AttenteJoueurs() {
 /* Description : Initialise une partie et attends les autres joueurs				*/
 /************************************************************************************************/
 void CreerPartie(){
+	initPartie();
 	printf("-------------- code à partager : %d --------------\n", p.joueurs[0].pid);
 	printf("-------------- LISTE DES JOUEURS (entrez n'importe quel charactere pour débuter) --------------\n");
 	printf("- %s\n", p.joueurs[0].pseudo);
@@ -109,6 +124,18 @@ void CreerPartie(){
 	//thread attendant les joueurs et l'approbation de l'hébergeur pour démarrer.
 	pthread_create(&thread, NULL, AttenteJoueurs, NULL);
 	pthread_join(thread, &ret);
+	
+	//on charge les cartes à partir du fichier uno.txt
+	chargement("uno.txt", p.pioche);
+	//on mélange le jeu de cartes
+	shuffle(p.pioche);
+	shuffle(p.pioche);
+	
+	for(int j=0; j<NbCartes; j++){
+		printf("num: %c | coul: %c\n",p.pioche[j].num,p.pioche[j].coul);
+	}
+	
+	
 	
 	//TODO démarrer la partie
 	
