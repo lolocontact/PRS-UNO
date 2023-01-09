@@ -70,7 +70,7 @@ void chargement(char *fileName, carte pioche[NbCartes]){
 
 /**************************************************************************************************
 \Author : Loïc Petitprez
-\brief mélande un tas de carte
+\brief mélange un tas de carte
 **************************************************************************************************/
 void shuffle(carte tas[NbCartes])
 {
@@ -83,4 +83,51 @@ void shuffle(carte tas[NbCartes])
             tas[i] = t;
         }
     }
+}
+
+/**************************************************************************************************/
+/*Fonction : premier                                                                              */
+/* Description :        envoie le premier mot d'une chaine                                        */
+/* Entrees :            ch la chaine de caractere                                                 */
+/* Sorties :            le premier mot de la chaine ch                                            */
+/* Retourne :           le premier mot de la chaine ch                                            */
+/**************************************************************************************************/
+char *premier(char *ch, char *mot)
+{
+	int i=0;
+
+	while (ch[i] != '-' && ch[i] != ' ' && ch[i] !='\0') // on verif pour un 1 comme ca il core dumped pas 
+	{
+		mot[i]=ch[i];
+		i++;
+	}
+	mot[i]='\0';
+	return mot;
+}
+//=================================================================================================================================================
+/**************************************************************************************************/
+/*Fonction : saufpremier                                                                          */
+/* Description :        envoie la chaine sans le premier de cette dernière                        */
+/* Entrees :            ch la chaine de caractere                                                 */
+/* Sorties :            ch sans son premier mot                                                   */
+/* Retourne :           ch sans son premier mot                                                   */
+/**************************************************************************************************/		
+char * saufpremier ( char *ch, char *restch)
+{
+	int i=0,j=0;
+	while (ch[i] != '-' && ch[i] != ' ' && ch[i] !='\0'){ 
+		i++; // on obtien la postion du premier mot
+					
+	}
+	i++; //on passe le tiret
+	//printf("on cherche a partir de ou il y a l espace : %d\n",i );
+			
+	while (ch[i] != '\0')
+	{
+		restch[j]=ch[i];
+		i++;
+		j++;
+	}
+	restch[j]='\0';
+	return restch;
 }

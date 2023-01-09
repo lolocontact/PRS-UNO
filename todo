@@ -1,0 +1,15 @@
+-pseudo			tube
+-connexion & pid	signal
+-id bal			
+
+
+
+
+
+
+1) Ecris P dans shm
+2) à chaque nouveau PJ :
+	-Lis P dans shm
+	-Modifie et écrase P dans shm
+
+3) get P global var <- via shm

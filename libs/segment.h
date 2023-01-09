@@ -29,13 +29,13 @@ void detacherSegment(char * segmentADDRESS);
 /*Fonction : ecritureSegment                                                                      */
 /* Description : On écrit sur un segment			                                  */
 /**************************************************************************************************/
-void ecritureSegment(int segmentID, char* message);
+void ecritureSegment(int segmentID, int message);
 
 /**************************************************************************************************/
 /*Fonction : lireSegment                                                                          */
 /* Description : Lis un segment					                                  */
 /**************************************************************************************************/
-char * lireSegment(int shmId);
+int lireSegment(int shmId);
 
 /************************************************************************************************/
 /*Fonction : attacheSegment									*/
@@ -71,7 +71,31 @@ char * attacheSegment2(int segmentID, char * segmentADDRESS);
 /* ==================================================== */
 
 /**************************************************************************************************/
+/*Fonction : envoieCarte	                                                                  */
+/* Description : envoie 7 cartes	 			                                  */
+/**************************************************************************************************/
+void envoieCarte(int segmentID, carte message[carteEnDebutDePartie]);
+
+/**************************************************************************************************/
+/*Fonction : lireCarte  	 	                                                          */
+/* Description : Reçois ses 7 cartes				                                  */
+/**************************************************************************************************/
+carte * lireCarte(int shmId);
+
+/**************************************************************************************************/
 /*Fonction : pid2string	                                                                          */
 /* Description : créer un nom/emplacement de segment au nom du pid                                */
 /**************************************************************************************************/
 char * pid2string( int pid );
+
+/**************************************************************************************************/
+/*Fonction : ecriturePartie                                                                       */
+/* Description : On écrit sur p					                                  */
+/**************************************************************************************************/
+//void ecriturePartie(int segmentID, struct partie message);
+
+/**************************************************************************************************/
+/*Fonction : lecturePartie                                                                        */
+/* Description : Lis partie p					                                  */
+/**************************************************************************************************/
+//partie lecturePartie(int shmId);

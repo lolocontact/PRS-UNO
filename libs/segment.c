@@ -61,28 +61,29 @@ void detacherSegment(char * segmentADDRESS){
 /*Fonction : ecritureSegment                                                                      */
 /* Description : On écrit sur un segment			                                  */
 /**************************************************************************************************/
-void ecritureSegment(int segmentID, char* message){
-	char * zoneEcriture = shmat(segmentID,NULL,0);
-	if (zoneEcriture == (char *)-1)
+void ecritureSegment(int segmentID, int message){
+	int* zoneEcriture = (int*) shmat(segmentID,NULL,0);
+	if ( *zoneEcriture == -1)
 	{
 		printf("SERVEUR - Impossible de s'attacher au segment de mémoire %d \n",segmentID);
 		exit(EXIT_FAILURE);
 	}
-	sprintf(zoneEcriture,"%s",message);
+	//sprintf(zoneEcriture,"%s",message);
+	*zoneEcriture = message;
 }
 
 /**************************************************************************************************/
 /*Fonction : lireSegment                                                                          */
 /* Description : Lis un segment					                                  */
 /**************************************************************************************************/
-char * lireSegment(int shmId){
-	char * message = shmat(shmId,NULL,0);
-	if (message == (char *)-1)
+int lireSegment(int shmId){
+	int* message = (int *)  shmat(shmId,NULL,0);
+	if ( *message == -1)
 	{
 		printf("CLIENT - Impossible de s'attacher au segment de mémoire : %d \n",shmId);
 		exit(EXIT_FAILURE);
 	}
-	return message;
+	return *message;
 }
 
 /************************************************************************************************/
@@ -157,8 +158,24 @@ char * attacheSegment2(int segmentID, char * segmentADDRESS){
 }
 
 /* ==================================================== */
-/* AUTRE                                             */
+/* CARTES						*/
 /* ==================================================== */
+//matin brin
+/**************************************************************************************************/
+/*Fonction : envoieCarte	                                                                  */
+/* Description : envoie 7 cartes	 			                                  */
+/**************************************************************************************************/
+void envoieCarte(int segmentID, carte message[carteEnDebutDePartie]){
+	message = shmat(segmentID,NULL,0);
+}
+
+/**************************************************************************************************/
+/*Fonction : lireCarte  	 	                                                          */
+/* Description : Reçois ses 7 cartes				                                  */
+/**************************************************************************************************/
+carte * lireCarte(int shmId){
+	return shmat(shmId,NULL,0);
+}
 
 /**************************************************************************************************/
 /*Fonction : pid2string	                                                                          */
@@ -172,3 +189,28 @@ char * pid2string( int pid ){
 	strcat(nomTube,pidstr); strcat(nomTube,"");
 	return nomTube;
 }
+
+
+//int id;
+//FILE_entry *entries;
+
+//id = shmget(key, N * sizeof(FILE_entry), IPC_CREAT | 0644);
+//entries = (FILE_entry *) shmat(id, NULL, 0);
+/**************************************************************************************************/
+/*Fonction : ecriturePartie                                                                       */
+/* Description : On écrit sur p					                                  */
+/**************************************************************************************************/
+/*void ecriturePartie(int segmentID, struct partie message){
+	struct partie* temp = (struct partie*) shmat(segmentID,NULL,0);
+	*temp=message;
+}*/
+
+/**************************************************************************************************/
+/*Fonction : lecturePartie                                                                        */
+/* Description : Lis partie p					                                  */
+/**************************************************************************************************/
+/*partie lecturePartie(int shmId){
+	struct partie* message = (struct partie *) shmat(shmId,NULL,0);
+	return *message;
+}*/
+
